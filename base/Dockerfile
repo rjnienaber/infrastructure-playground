@@ -8,6 +8,8 @@ RUN apt-get install vim tree lsof net-tools wget curl moreutils rabbitmq-server 
 RUN rabbitmq-plugins enable rabbitmq_management
 RUN rabbitmq-plugins enable rabbitmq_shovel
 RUN rabbitmq-plugins enable rabbitmq_shovel_management
+
+#rabbitmq is particular about how it wants the cookie
 ADD .erlang.cookie /var/lib/rabbitmq/.erlang.cookie
 RUN chmod 400 /var/lib/rabbitmq/.erlang.cookie
 RUN chown rabbitmq:rabbitmq /var/lib/rabbitmq/.erlang.cookie
