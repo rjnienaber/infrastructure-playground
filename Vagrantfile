@@ -1,12 +1,12 @@
 start_containers = %Q{docker rm `docker ps -a -q`
 docker images -a | grep '<none>' | cut -d ' ' -f 31 | xargs docker rmi
 
-docker run -d -h cluster1 -p 15672:15672 --name cluster1 rjnienaber/rabbitmq:cluster1
-docker run -d -h cluster3 -p 15674:15672 --name cluster3 rjnienaber/rabbitmq:cluster3
+docker run -d -h cluster1 -p 15672:15672 -p 5672:5672 --name cluster1 rjnienaber/rabbitmq:cluster1
+docker run -d -h cluster3 -p 15674:15672 -p 5674:5672 --name cluster3 rjnienaber/rabbitmq:cluster3
 
 #wait for the first machine to start up
 sleep 10
-docker run -d -h cluster2 -p 15673:15672 --link cluster1:cluster1 --name cluster2 rjnienaber/rabbitmq:cluster2
+docker run -d -h cluster2 -p 15673:15672 -p 5673:5672 --link cluster1:cluster1 --name cluster2 rjnienaber/rabbitmq:cluster2
 }
 
 Vagrant.configure("2") do |config|
@@ -24,8 +24,11 @@ Vagrant.configure("2") do |config|
 
   # RabbitMQ Server Port Forwarding
   config.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true 
+  config.vm.network :forwarded_port, guest: 5672, host: 5672, auto_correct: true 
   config.vm.network :forwarded_port, guest: 15673, host: 15673, auto_correct: true 
+  config.vm.network :forwarded_port, guest: 5673, host: 5673, auto_correct: true 
   config.vm.network :forwarded_port, guest: 15674, host: 15674, auto_correct: true 
+  config.vm.network :forwarded_port, guest: 5674, host: 5674, auto_correct: true 
 
   # Ubuntu 12.04
   config.vm.box = "hashicorp/precise64"
