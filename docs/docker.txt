@@ -1,5 +1,5 @@
 remove all containers
-  docker rm `docker ps -a -q`
+  docker rm -f `docker ps -a -q`
 
 remove unreferenced images
   docker images -a | grep '<none>' | cut -d ' ' -f 31 | xargs docker rmi
@@ -9,3 +9,18 @@ start docker
 
 start docker and link image at bash command    
   docker run -t --rm -i -h cluster2 -p 5673:5672 -p 15673:15672 --link cluster1:cluster1 --name cluster2 rjnienaber/rabbitmq:cluster2 /bin/bash
+
+build docker image
+  docker build -t testing .
+
+list images
+  docker images
+
+run docker image
+  docker run -i -t testing /bin/bash
+
+stop running image
+  docker kill cluster1
+
+remove image
+  docker rmi f0e8521a0225

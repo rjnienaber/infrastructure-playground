@@ -1,4 +1,4 @@
-start_containers = %Q{docker rm `docker ps -a -q`
+start_containers = %Q{docker rm -f `docker ps -a -q`
 docker images -a | grep '<none>' | cut -d ' ' -f 31 | xargs docker rmi
 
 docker run -d -h cluster1 -p 15672:15672 -p 5672:5672 --name cluster1 rjnienaber/rabbitmq:cluster1
@@ -17,10 +17,7 @@ Vagrant.configure("2") do |config|
     v.cpus = 2
   end
 
-  config.vm.synced_folder ".", "/app", type: "nfs"
-
-  # need a private network for NFS shares to work
-  config.vm.network "private_network", ip: "192.168.2.2"
+  config.vm.synced_folder ".", "/app"
 
   # RabbitMQ Server Port Forwarding
   config.vm.network :forwarded_port, guest: 15672, host: 15672, auto_correct: true 
@@ -31,7 +28,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 5674, host: 5674, auto_correct: true 
 
   # Ubuntu 12.04
-  config.vm.box = "hashicorp/precise64"
+  config.vm.box = "ubuntu/trusty64"
 
   # Install latest docker
   config.vm.provision "docker" do |d|
