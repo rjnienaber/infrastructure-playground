@@ -9,7 +9,7 @@ conn.start
 
 ch   = conn.create_channel
 
-class ExecuteTradeCommand
+class FibonacciClient
   attr_reader :reply_queue
   attr_accessor :response, :call_id
   attr_reader :lock, :condition
@@ -57,8 +57,9 @@ end
 
 
 client   = FibonacciClient.new(ch, "rpc_queue")
-puts " [x] Requesting fib(30)"
-response = client.call(30)
+size = ARGV[0].to_i
+puts " [x] Requesting fib(#{size})"
+response = client.call(size)
 puts " [.] Got #{response}"
 
 ch.close

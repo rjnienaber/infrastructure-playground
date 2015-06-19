@@ -6,7 +6,7 @@ require "bunny"
 conn = Bunny.new(:automatically_recover => false, :user => "admin", :password => "Rabbit123")
 conn.start
 
-ch   = conn.create_channel
+ch   = conn.create_channel(nil, 16)
 
 class FibonacciServer
 
