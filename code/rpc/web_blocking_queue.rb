@@ -2,13 +2,14 @@ require 'sinatra'
 require "thread"
 require "march_hare"
 require 'pry'
+java_import java.util.concurrent.ArrayBlockingQueue
+java_import java.util.concurrent.TimeUnit
 
 require 'logger'
 LOGGER = Logger.new(STDOUT)
 
-
 class ExecuteCommand
-  attr_reader :reply_queue, :lock, :condition, :correlation_id, :default_exchange
+  attr_reader :reply_queue, :queue, :correlation_id, :default_exchange
   attr_accessor :response
 
   def initialize(ch, server_queue)
@@ -16,16 +17,12 @@ class ExecuteCommand
     @server_queue = server_queue
     @reply_queue = ch.queue("", :exclusive => true)
 
-    @lock = Mutex.new
-    @condition = ConditionVariable.new
+    @queue = ArrayBlockingQueue.new(1)
     @correlation_id = java.util.UUID.randomUUID().to_s
     that = self
 
     @reply_queue.subscribe do |payload|
-      # if properties[:correlation_id] == that.correlation_id
-        that.response = payload
-        that.lock.synchronize{that.condition.signal}
-      # end
+      that.queue.put(payload)
     end
   end
 
@@ -35,8 +32,8 @@ class ExecuteCommand
       :correlation_id => correlation_id,
       :reply_to       => @reply_queue.name)
     
-    lock.synchronize { condition.wait(lock) }
-    response + "\n"
+    result = queue.poll(5, TimeUnit::SECONDS) || 'Timed out'
+    result + "\n"
   end
 end
 
@@ -46,10 +43,13 @@ get '/execute_trade' do
 
   client = ExecuteCommand.new(ch, 'rpc.execute_trade')
   begin
-    LOGGER.debug('EXECUTING')
     response = client.call((params[:sleep] || 5).to_s)
   ensure
     ch.close
     conn.close
   end
+end
+
+get '/hello' do
+  'Hello, world!'
 end
