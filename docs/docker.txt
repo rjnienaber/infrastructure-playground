@@ -24,3 +24,6 @@ stop running image
 
 remove image
   docker rmi f0e8521a0225
+
+remove all cluster images
+  for f in `docker images | grep cluster | tr -s ' ' | cut -d ' ' -f 3`; do docker rmi $f; done
