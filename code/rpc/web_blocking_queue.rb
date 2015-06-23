@@ -9,7 +9,7 @@ require 'logger'
 LOGGER = Logger.new(STDOUT)
 
 class ExecuteCommand
-  attr_reader :reply_queue, :queue, :correlation_id, :default_exchange
+  attr_reader :reply_queue, :queue, :default_exchange
   attr_accessor :response
 
   def initialize(ch, server_queue)
@@ -18,7 +18,6 @@ class ExecuteCommand
     @reply_queue = ch.queue("", :exclusive => true)
 
     @queue = ArrayBlockingQueue.new(1)
-    @correlation_id = java.util.UUID.randomUUID().to_s
     that = self
 
     @reply_queue.subscribe do |payload|
@@ -27,10 +26,7 @@ class ExecuteCommand
   end
 
   def call(value)
-    @default_exchange.publish(value.to_s,
-      :routing_key    => @server_queue,
-      :correlation_id => correlation_id,
-      :reply_to       => @reply_queue.name)
+    @default_exchange.publish(value.to_s, :routing_key => @server_queue, :reply_to => @reply_queue.name)
     
     result = queue.poll(5, TimeUnit::SECONDS) || 'Timed out'
     result + "\n"

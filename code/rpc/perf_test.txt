@@ -1,0 +1,95 @@
+TEST
+$ ab -n 1000 -c 10 http://127.0.0.1:4567/execute_trade?sleep=0.1
+
+MUTEX
+Concurrency Level:      10
+Time taken for tests:   13.730 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      279000 bytes
+HTML transferred:       23000 bytes
+Requests per second:    72.83 [#/sec] (mean)
+Time per request:       137.301 [ms] (mean)
+Time per request:       13.730 [ms] (mean, across all concurrent requests)
+Transfer rate:          19.84 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       3
+Processing:   117  137  15.8    132     210
+Waiting:      117  136  15.7    132     210
+Total:        117  137  15.8    132     213
+
+Percentage of the requests served within a certain time (ms)
+  50%    132
+  66%    138
+  75%    142
+  80%    146
+  90%    156
+  95%    169
+  98%    188
+  99%    198
+ 100%    213 (longest request)
+
+BLOCKING QUEUE
+Concurrency Level:      10
+Time taken for tests:   13.843 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      279000 bytes
+HTML transferred:       23000 bytes
+Requests per second:    72.24 [#/sec] (mean)
+Time per request:       138.429 [ms] (mean)
+Time per request:       13.843 [ms] (mean, across all concurrent requests)
+Transfer rate:          19.68 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.0      0       0
+Processing:   118  138  14.8    134     207
+Waiting:      118  138  14.8    134     207
+Total:        118  138  14.8    134     207
+
+Percentage of the requests served within a certain time (ms)
+  50%    134
+  66%    140
+  75%    144
+  80%    148
+  90%    158
+  95%    168
+  98%    179
+  99%    189
+ 100%    207 (longest request)
+
+STATIC QUEUE
+Concurrency Level:      10
+Time taken for tests:   15.497 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      279000 bytes
+HTML transferred:       23000 bytes
+Requests per second:    64.53 [#/sec] (mean)
+Time per request:       154.973 [ms] (mean)
+Time per request:       15.497 [ms] (mean, across all concurrent requests)
+Transfer rate:          17.58 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.0      0       0
+Processing:   116  154  24.1    152     244
+Waiting:      116  154  24.1    152     244
+Total:        116  154  24.1    152     244
+
+Percentage of the requests served within a certain time (ms)
+  50%    152
+  66%    163
+  75%    169
+  80%    172
+  90%    189
+  95%    202
+  98%    210
+  99%    215
+ 100%    244 (longest request)
+
+
+

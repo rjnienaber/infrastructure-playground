@@ -25,12 +25,11 @@ q.subscribe(:ack => true) do |delivery_info, payload|
     begin
       sleep_time = payload.to_f
       r = execute_trade(sleep_time)
-      # LOGGER.info("TAG: #{delivery_info.delivery_tag}")
-      # LOGGER.info("ID: #{r}, SLEEP: #{sleep_time}")
+      LOGGER.info("ID: #{r}, SLEEP: #{sleep_time}")
 
       ch.ack(delivery_info.delivery_tag)
-      LOGGER.info("PUBLISH: #{delivery_info.correlation_id}")
-      x.publish("#{r} - #{sleep_time}", :routing_key => delivery_info.reply_to, :correlation_id => delivery_info.correlation_id)
+      # LOGGER.info("PUBLISH: #{delivery_info.correlation_id}")
+      x.publish("#{r} - #{sleep_time}", :routing_key => delivery_info.reply_to)
     rescue => e
       LOGGER.error(e)
     end

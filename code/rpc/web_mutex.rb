@@ -21,10 +21,8 @@ class ExecuteCommand
     that = self
 
     @reply_queue.subscribe do |payload|
-      # if properties[:correlation_id] == that.correlation_id
-        that.response = payload
-        that.lock.synchronize{that.condition.signal}
-      # end
+      that.response = payload
+      that.lock.synchronize{that.condition.signal}
     end
   end
 
@@ -45,7 +43,6 @@ get '/execute_trade' do
 
   client = ExecuteCommand.new(ch, 'rpc.execute_trade')
   begin
-    LOGGER.debug('EXECUTING')
     response = client.call((params[:sleep] || 5).to_s)
   ensure
     ch.close
