@@ -27,7 +27,7 @@ class ExecuteCommand
     reply_queue = channel.queue("", :exclusive => true)
 
     that = self
-    reply_queue.subscribe do |payload|
+    reply_queue.subscribe(:auto_delete => true, :exclusive => true) do |payload|
       that.queue.put(payload)
     end
 
@@ -37,7 +37,8 @@ class ExecuteCommand
     result = queue.poll(5, TimeUnit::SECONDS) || 'Timed out'
     result + "\n"
   ensure
-    channel.close
+    reply_queue.delete if reply_queue
+    channel.close    
   end
 end
 
